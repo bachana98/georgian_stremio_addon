@@ -14,7 +14,8 @@ const manifest = {
 
 const builder = new addonBuilder(manifest);
 
-builder.defineCatalogHandler(({ type, id }) => {
+// ******** შეცვლილი ხაზი აქ არის: დაემატა ', extra' პარამეტრებში ********
+builder.defineCatalogHandler(({ type, id, extra }) => { 
   if (type === "tv" && id === "geo-tve") {
     return Promise.resolve({
       metas: [
@@ -23,15 +24,17 @@ builder.defineCatalogHandler(({ type, id }) => {
       ]
     });
   }
+  // თუ type ან id არ ემთხვევა, დააბრუნეთ ცარიელი metas
   return Promise.resolve({ metas: [] });
 });
 
 builder.defineStreamHandler(({ id }) => {
   const streams = {
     formula: [{ title: "Formula TV Live", url: "https://tv.cdn.xsg.ge/c4635/TVFormula/index.m3u8" }],
-    pirveli: [{ title: "TV Pirveli Live", url: "http://tbs01-edge02.cpanel.ge/pirvelitv/playlist.m3u8" }]
+    // TV Pirveli-ს URL: თუ პრობლემა შეგექმნებათ, ეცადეთ HTTPS ვერსია იპოვოთ
+    pirveli: [{ title: "TV Pirveli Live", url: "http://tbs01-edge02.cpanel.ge/pirvelitv/playlist.m3u8" }] 
   };
   return Promise.resolve({ streams: streams[id] || [] });
 });
 
-module.exports = builder.getInterface();
+module.exports = builder.getInterface();  
