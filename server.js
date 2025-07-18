@@ -1,25 +1,9 @@
-const express = require("express");
-const app = express();
-const addonInterface = require("./addon"); // დარწმუნდი, რომ addon.js იგივე ფოლდერშია
+const { serveHTTP } = require("stremio-addon-sdk");
+const addonInterface = require("./addon"); // addon.js ფაილი, რომელიც შეიცავს Add-on-ის ლოგიკას
 
-const PORT = process.env.PORT || 10000;
+// serveHTTP ფუნქცია Stremio Add-on-ის ინტერფეისს აწვდის HTTP მოთხოვნებზე.
+// ის ავტომატურად ამუშავებს ყველა Stremio API როუტს.
+serveHTTP(addonInterface, { port: process.env.PORT || 10000 });
 
-// მთავარი გვერდი გადამისამართდეს manifest-ზე
-app.get("/", (req, res) => {
-  res.redirect("/manifest.json");
-});
-
-// manifest.json სერვისისთვის
-app.get("/manifest.json", (req, res) => {
-  res.setHeader("Content-Type", "application/json");
-  res.send(addonInterface.manifest);
-});
-
-// სტანდარტული Stremio-ის რესურს როუტი: /:resource/:type/:id/:extra?.json
-app.get("/:resource/:type/:id/:extra?.json", (req, res) => {
-  addonInterface.get(req, res);
-});
-
-app.listen(PORT, () => {
-  console.log(`✅ Add-on running at http://localhost:${PORT}`);
-});
+// ლოგირება, რომ Add-on მუშაობს
+console.log(`✅ Add-on running at http://localhost:${process.env.PORT || 10000}`);
