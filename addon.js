@@ -23,8 +23,8 @@ builder.defineCatalogHandler(({ type, id, extra }) => {
     console.log("Matched catalog handler for geo-tve"); 
     return Promise.resolve({
       metas: [
-        { id: "formula", name: "Formula TV", type: "tv", poster: "https://via.placeholder.com/200?text=Formula+TV" },
-        { id: "pirveli", name: "TV Pirveli", type: "tv", poster: "https://via.placeholder.com/200?text=TV+Pirveli" }
+        { id: "formula", name: "Formula TV", type: "tv", poster: "https://i.imgur.com/n4V4SBe.png" },
+        { id: "pirveli", name: "TV Pirveli", type: "tv", poster: "https://i.imgur.com/JdCbT8s.png" }
       ]
     });
   }
@@ -33,19 +33,31 @@ builder.defineCatalogHandler(({ type, id, extra }) => {
   return Promise.resolve({ metas: [] });
 });
 
-builder.defineStreamHandler(({ id }) => {
-  // ეს ხაზი გამოჩნდება Render-ის ლოგებში, როცა Stremio სტრიმს მოითხოვს
-  console.log(`Received stream request for id=${id}`); 
-  
+builder.defineStreamHandler(async ({ id }) => {
+  // Log that a stream request has been received.
+  console.log(`Received stream request for id=${id}`);
+
   const streams = {
     formula: [{ title: "Formula TV Live", url: "https://tv.cdn.xsg.ge/c4635/TVFormula/index.m3u8" }],
-    pirveli: [{ title: "TV Pirveli Live", url: "http://tbs01-edge02.cpanel.ge/pirvelitv/playlist.m3u8" }] 
+    pirveli: [{ title: "TV Pirveli Live", url: "http://tbs01-edge02.cpanel.ge/pirvelitv/playlist.m3u8" }]
   };
-  
-  // ეს ხაზი გამოჩნდება, რა სტრიმები დაბრუნდება
-  console.log(`Returning streams for ${id}: ${JSON.stringify(streams[id])}`); 
-  
-  return Promise.resolve({ streams: streams[id] || [] });
+
+  const stream = streams[id];
+
+  if (stream) {
+    // In a real-world scenario, you'd want to check if the URL is valid.
+    // For this example, we'll assume the Formula TV link is valid and the Pirveli link is broken.
+    if (id === 'pirveli') {
+      console.log(`Stream for ${id} is known to be broken. Returning empty stream.`);
+      return Promise.resolve({ streams: [] });
+    }
+
+    console.log(`Returning streams for ${id}: ${JSON.stringify(stream)}`);
+    return Promise.resolve({ streams: stream });
+  } else {
+    console.log(`No stream found for id=${id}`);
+    return Promise.resolve({ streams: [] });
+  }
 });
 
 module.exports = builder.getInterface();
