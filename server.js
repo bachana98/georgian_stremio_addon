@@ -1,34 +1,25 @@
 const express = require("express");
 const app = express();
-const addonInterface = require("./addon"); // დარწმუნდით, რომ addon.js სწორ ადგილასაა
+const addonInterface = require("./addon"); // დარწმუნდი, რომ addon.js იგივე ფოლდერშია
 
-const express = require("express");
-const addonInterface = require("./addon");
-const app = express();
+const PORT = process.env.PORT || 10000;
 
-const PORT = process.env.PORT || 7000;
-
+// მთავარი გვერდი გადამისამართდეს manifest-ზე
 app.get("/", (req, res) => {
   res.redirect("/manifest.json");
 });
 
+// manifest.json სერვისისთვის
 app.get("/manifest.json", (req, res) => {
   res.setHeader("Content-Type", "application/json");
   res.send(addonInterface.manifest);
 });
 
-app.get("/stream/:type/:id.json", (req, res) => {
-  addonInterface.get({ resource: "stream", type: req.params.type, id: req.params.id })
-    .then(resp => {
-      res.setHeader("Content-Type", "application/json");
-      res.send(resp);
-    })
-    .catch(err => {
-      console.error(err);
-      res.status(500).send({ err: "Got error in stream call" });
-    });
+// სტანდარტული Stremio-ის რესურს როუტი: /:resource/:type/:id/:extra?.json
+app.get("/:resource/:type/:id/:extra?.json", (req, res) => {
+  addonInterface.get(req, res);
 });
 
 app.listen(PORT, () => {
-  console.log(`Add-on running on http://localhost:${PORT}`);
+  console.log(`✅ Add-on running at http://localhost:${PORT}`);
 });
