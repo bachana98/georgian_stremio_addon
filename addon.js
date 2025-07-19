@@ -56,7 +56,7 @@ builder.defineStreamHandler(async ({ id }) => {
     pirveli: [
       {
         title: "TV Pirveli Live",
-        url: "http://tbs01-edge02.cpanel.ge/pirvelitv/playlist.m3u8"
+        url: "http://dvrfl05.bozztv.com/gin-tvpirveli/index.m3u8"
       }
     ]
   };
