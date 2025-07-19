@@ -26,13 +26,13 @@ builder.defineCatalogHandler(({ type, id, extra }) => {
           id: "formula",
           name: "Formula TV",
           type: "tv",
-          poster: "https://i.imgur.com/n4V4SBe.png"
+          poster: "https://i.imgur.com/fsqBn8G.png"
         },
         {
           id: "pirveli",
           name: "TV Pirveli",
           type: "tv",
-          poster: "https://i.imgur.com/JdCbT8s.png"
+          poster: "https://i.imgur.com/cGHsM1x.png"
         }
       ]
     });
